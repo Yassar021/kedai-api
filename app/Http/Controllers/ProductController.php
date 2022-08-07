@@ -13,19 +13,10 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        $q = $request->query('category', '');
+        return Product::where('category', 'like', "%$q%")->latest()->get();
     }
 
     /**
@@ -36,29 +27,16 @@ class ProductController extends Controller
      */
     public function store(StoreProductRequest $request)
     {
-        //
-    }
+        $name = date('his') . '.png';
+        $product = Product::create($request->except('picture'));
+        $request->image->storeAs('public/images', $name);
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Product  $product
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Product $product)
-    {
-        //
-    }
+        $product->picture = $name;
+        $product->save();
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Product  $product
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Product $product)
-    {
-        //
+        return response([
+            'message' => 'data created!',
+        ]);
     }
 
     /**
@@ -70,7 +48,16 @@ class ProductController extends Controller
      */
     public function update(UpdateProductRequest $request, Product $product)
     {
-        //
+        if ($request->hasFile('picture')) {
+            $name = date('his') . '.png';
+            $product->update(['picture' => $name]);
+            $request->image->storeAs('public/images', $name);
+        }
+        $product->update($request->except('picture'));
+
+        return response([
+            'message' => 'data updated!',
+        ]);
     }
 
     /**
@@ -81,6 +68,10 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        //
+        $product->delete();
+
+        return response([
+            'message' => 'data deleted!',
+        ]);
     }
 }
