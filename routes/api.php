@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\TableController;
+use App\Http\Controllers\TransactionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -24,3 +26,12 @@ Route::get('/products', [ProductController::class, 'index']);
 Route::post('/products', [ProductController::class, 'store']);
 Route::put('/products/{product}', [ProductController::class, 'update']);
 Route::delete('/products/{product}', [ProductController::class, 'destroy']);
+
+// table routes
+Route::get('/tables', [TableController::class, 'index']);
+
+// transaction routes
+Route::post('/transactions', [TransactionController::class, 'store']);
+Route::get('/transactions/{transaction}', [TransactionController::class, 'show']);
+Route::get('/transaction/{id}', [TransactionController::class, 'show2']);
+Route::put('/transactions/{transaction}', [TransactionController::class, 'update']);

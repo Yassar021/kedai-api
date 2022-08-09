@@ -3,9 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
-use App\Http\Requests\StoreProductRequest;
-use App\Http\Requests\UpdateProductRequest;
-
+use Illuminate\Http\Request;
 class ProductController extends Controller
 {
     /**
@@ -19,17 +17,19 @@ class ProductController extends Controller
         return Product::where('category', 'like', "%$q%")->latest()->get();
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreProductRequest  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(StoreProductRequest $request)
+    public function store(Request $request)
     {
+        $this->validate($request, [
+            'name' => 'required|string',
+            'category' => 'required|string',
+            'picture' => 'required|image',
+            'hotPrice' => 'required|numeric',
+            'icePrice' => 'required|numeric',
+        ]);
+
         $name = date('his') . '.png';
         $product = Product::create($request->except('picture'));
-        $request->image->storeAs('public/images', $name);
+        $request->picture->storeAs('public/images', $name);
 
         $product->picture = $name;
         $product->save();
@@ -39,19 +39,20 @@ class ProductController extends Controller
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateProductRequest  $request
-     * @param  \App\Models\Product  $product
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateProductRequest $request, Product $product)
+    public function update(Request $request, Product $product)
     {
+        $this->validate($request, [
+            'name' => 'sometimes|string',
+            'category' => 'sometimes|string',
+            'picture' => 'sometimes|image',
+            'hotPrice' => 'sometimes|numeric',
+            'icePrice' => 'sometimes|numeric',
+        ]);
+
         if ($request->hasFile('picture')) {
             $name = date('his') . '.png';
             $product->update(['picture' => $name]);
-            $request->image->storeAs('public/images', $name);
+            $request->picture->storeAs('public/images', $name);
         }
         $product->update($request->except('picture'));
 
