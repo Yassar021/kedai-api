@@ -15,5 +15,6 @@ class Product extends Model
         'picture',
         'hotPrice',
         'icePrice',
+        'stok',
     ];
 }

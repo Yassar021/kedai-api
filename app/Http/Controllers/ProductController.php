@@ -25,6 +25,7 @@ class ProductController extends Controller
             'picture' => 'required|image',
             'hotPrice' => 'required|numeric',
             'icePrice' => 'required|numeric',
+            'stok' => 'required|numeric',
         ]);
 
         $name = date('his') . '.png';
@@ -47,6 +48,7 @@ class ProductController extends Controller
             'picture' => 'sometimes|image',
             'hotPrice' => 'sometimes|numeric',
             'icePrice' => 'sometimes|numeric',
+            'stok' => 'sometimes|numeric',
         ]);
 
         if ($request->hasFile('picture')) {
